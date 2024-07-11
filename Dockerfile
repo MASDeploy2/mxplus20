@@ -9,10 +9,13 @@ COPY package*.json ./
 # run command
 RUN yarn install
 
+RUN mkdir /app/.parcel-cache && chmod -R 777 /app/.parcel-cache
+
 COPY . .
+
 
 
 EXPOSE 8080
 
 
-CMD ["yarn","start"]
+CMD ["yarn","run","start"]
