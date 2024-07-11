@@ -9,7 +9,7 @@ COPY package*.json ./
 # run command
 RUN yarn install
 
-RUN mkdir /app/.parcel-cache && chmod -R 777 /app/.parcel-cache
+RUN mkdir /app/.parcel-cache && chmod -R 777 /app/.parcel-cache && chmod -R 777 /app
 
 COPY . .
 
