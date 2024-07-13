@@ -12,7 +12,7 @@ COPY package*.json ./
 RUN yarn install
 
 # Copy the dependencies into a minimal Node.js image
-FROM FROM node:18-slim AS final
+FROM node:18-slim AS final
 
 # copy the app dependencies
 COPY --from=base /opt/app-root/src/node_modules /opt/app-root/src/node_modules
