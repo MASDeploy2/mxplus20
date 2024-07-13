@@ -1,25 +1,25 @@
 # Install the application dependencies in a full UBI Node docker image
-FROM registry.access.redhat.com/ubi8/nodejs-18:latest AS base
+FROM registry.access.redhat.com/ubi8/nodejs-14 AS base
 
 # Elevate privileges to run npm
 USER root
 
 # Copy package.json and package-lock.json
-COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
+COPY package*.json ./
 
 
 # Install app dependencies
-RUN yarn install --frozen-lockfile
+RUN npm install
 
 # Copy the dependencies into a minimal Node.js image
-FROM registry.access.redhat.com/ubi8/nodejs-18-minimal:latest AS final
+FROM registry.access.redhat.com/ubi8/nodejs-14-minimal:latest AS final
 
 # copy the app dependencies
 COPY --from=base /opt/app-root/src/node_modules /opt/app-root/src/node_modules
 COPY . /opt/app-root/src
 
 # Build the pacckages in minimal image
-RUN yarn build
+RUN npn run build
 
 # Elevate privileges to change owner of source files
 USER root
@@ -38,4 +38,4 @@ ENV PORT 3000
 EXPOSE 3000
 
 # Start node process
-CMD ["npm", "start"]
+CMD ["yarn", "start"]
