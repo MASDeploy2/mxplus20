@@ -5,10 +5,16 @@ FROM registry.access.redhat.com/ubi8/nodejs-18:latest AS base
 USER root
 
 # Copy package.json and package-lock.json
-COPY package*.json ./
+COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
+
 
 # Install app dependencies
-RUN npm install
+RUN \
+  if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
+  elif [ -f package-lock.json ]; then npm ci; \
+  elif [ -f pnpm-lock.yaml ]; then yarn global add pnpm && pnpm i; \
+  else echo "Lockfile not found." && exit 1; \
+  fi
 
 # Copy the dependencies into a minimal Node.js image
 FROM registry.access.redhat.com/ubi8/nodejs-18-minimal:latest AS final
@@ -18,7 +24,7 @@ COPY --from=base /opt/app-root/src/node_modules /opt/app-root/src/node_modules
 COPY . /opt/app-root/src
 
 # Build the pacckages in minimal image
-RUN npm run build
+RUN yarn build
 
 # Elevate privileges to change owner of source files
 USER root
