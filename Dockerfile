@@ -4,6 +4,8 @@ FROM node:18-alpine AS base
 # Elevate privileges to run npm
 USER root
 
+WORKDIR /app
+
 # Copy package.json and package-lock.json
 COPY package*.json ./
 
@@ -13,17 +15,18 @@ RUN yarn install
 
 # Copy the dependencies into a minimal Node.js image
 FROM node:18-slim AS final
+WORKDIR /app
 
 # copy the app dependencies
-COPY --from=base /opt/app-root/src/node_modules /opt/app-root/src/node_modules
-COPY . /opt/app-root/src
+COPY --from=base /app/node_modules ./node_modules
+COPY . .
 
 # Build the pacckages in minimal image
 RUN yarn build
 
 # Elevate privileges to change owner of source files
 USER root
-RUN chown -R 1001:0 /opt/app-root/src
+RUN chown -R 1001:0 /app/src
 
 # Restore default user privileges
 USER 1001
