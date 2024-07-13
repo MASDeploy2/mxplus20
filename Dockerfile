@@ -38,4 +38,4 @@ ENV PORT 3000
 EXPOSE 3000
 
 # Start node process
-CMD ["yarn", "start"]
+CMD ["npm", "start"]
