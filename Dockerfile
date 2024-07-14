@@ -1,5 +1,8 @@
 FROM node:18-alpine AS base
 
+ARG http_port=3000
+ARG https_port=9443
+
 # Elevate privileges to run npm
 USER root
 
@@ -10,7 +13,7 @@ COPY package*.json ./
 
 # run command
 RUN yarn install
-
+RUN mkdir /app/.parcel-cache && chmod -R 777 /app/.parcel-cache && chmod -R 777 /app
 COPY . .
 
 USER root
@@ -20,12 +23,9 @@ RUN chown -R 1001:0 /app
 USER 1001
 
 
-# Container exposes port 3000
+# Container exposes port 
 EXPOSE 3000
-
-# Listen on port 3000
-ENV PORT 3000
-
+EXPOSE 9443
 EXPOSE 8080
 
 
