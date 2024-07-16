@@ -15,11 +15,14 @@ RUN yarn install
 FROM node:18-Alpine AS builder
 USER 0 
 WORKDIR /app 
+RUN mkdir /app/.parcel-cache && chmod -R 777 /app/.parcel-cache && chmod -R 777 /app
 COPY --from=deps /app/node_modules ./node_modules 
 COPY . . 
 ENV NEXT_TELEMETRY_DISABLED 1 
 
-RUN yarn build FROM node:18-Alpine AS runner
+RUN yarn build 
+
+FROM node:18-Alpine AS runner
 
 USER 0 WORKDIR /app 
 
