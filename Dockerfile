@@ -9,12 +9,11 @@ WORKDIR /app
 
 COPY package*.json ./ 
 
-RUN yarn install --frozen-lockfile --production --network-timeout 300000 
+RUN yarn install
 
 # Rebuild the source code only when needed FROM node:18-Alpine AS builder
-
+FROM node:18-Alpine AS builder
 USER 0 
-
 WORKDIR /app 
 COPY --from=deps /app/node_modules ./node_modules 
 COPY . . 
