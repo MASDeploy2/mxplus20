@@ -1,4 +1,4 @@
-FROM node:18-Alpine AS deps 
+FROM node:18-alpine AS deps 
 
 USER 0 
 
@@ -12,7 +12,7 @@ COPY package*.json ./
 RUN yarn install
 
 # Rebuild the source code only when needed FROM node:18-Alpine AS builder
-FROM node:18-Alpine AS builder
+FROM node:18-alpine AS builder
 USER 0 
 WORKDIR /app 
 RUN mkdir /app/.parcel-cache && chmod -R 777 /app/.parcel-cache && chmod -R 777 /app
@@ -22,7 +22,7 @@ ENV NEXT_TELEMETRY_DISABLED 1
 
 RUN yarn build 
 
-FROM node:18-Alpine AS runner
+FROM node:18-alpine AS runner
 
 USER 0 WORKDIR /app 
 
