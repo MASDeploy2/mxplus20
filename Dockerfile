@@ -9,8 +9,8 @@ COPY package*.json ./
 
 RUN yarn install
 
-RUN mkdir /usr/app/.parcel-cache && chmod -R 777 /usr/app/.parcel-cache
-chmod - R 777 /usr/app/
+RUN mkdir /usr/app/.parcel-cache && chmod -R 777 /usr/app/.parcel-cache && chmod - R 777 /usr/app/
+
 COPY --from=base /usr/app/node_modules ./node_modules 
 COPY . .
 
