@@ -23,7 +23,7 @@ USER root
 # stage: 2 — the production environment
 FROM nginx:alpine
 COPY nginx.conf /etc/nginx/conf.d/default.conf
-COPY --from=base --chown=1001:1001 /usr/app/src/dist .
+COPY --from=base /usr/app/src/dist .
 USER 1001
 EXPOSE 80
 EXPOSE 443
