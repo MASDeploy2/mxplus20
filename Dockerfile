@@ -9,12 +9,13 @@ COPY package*.json ./
 
 RUN yarn install
 
-RUN mkdir /usr/app/.parcel-cache && chmod -R 777 /usr/app/.parcel-cache && chmod - R 777 /usr/app
 
 COPY --from=base /usr/app/node_modules ./node_modules 
 COPY . .
 
 ENV NEXT_TELEMETRY_DISABLED 1 
+
+RUN mkdir /usr/app/.parcel-cache && chmod -R 777 /usr/app/.parcel-cache
 
 RUN yarn build 
 
