@@ -27,7 +27,9 @@ RUN yarn build
 
 FROM base AS runner
 
-USER 0 WORKDIR /app 
+USER 0 
+
+WORKDIR /app 
 
 ENV NODE_ENV production 
 
