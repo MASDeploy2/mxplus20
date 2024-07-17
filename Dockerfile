@@ -8,14 +8,8 @@ COPY package*.json ./
 
 RUN yarn install
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 6f31e117c5ce09d8b5f7893f731b491c6d9f3f3a
 COPY --from=base /usr/app/node_modules ./node_modules 
 COPY . .
-
-RUN mkdir /usr/app/.parcel-cache && chmod -R 777 /usr/app/.parcel-cache
 
 ENV NEXT_TELEMETRY_DISABLED 1 
 
@@ -24,8 +18,8 @@ RUN mkdir /usr/app/.parcel-cache && chmod -R 777 /usr/app/.parcel-cache
 
 RUN yarn build 
 
+
 FROM nginx:alpine
-<<<<<<< HEAD
 
 WORKDIR /usr/app
 
@@ -49,13 +43,9 @@ COPY --from=base /usr/app/node_modules ./node_modules
 ADD supervisor.conf /etc/supervisor.conf
 
 EXPOSE 3000
-=======
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-COPY --from=base /usr/app/src/dist .
-USER 1001
->>>>>>> 6f31e117c5ce09d8b5f7893f731b491c6d9f3f3a
 EXPOSE 80
 EXPOSE 443
+EXPOSE 8080
 
 # replace $PORT in nginx config (provided by executior) and start supervisord (run nextjs and nginx)
 CMD sed -i -e 's/$PORT/'"$PORT"'/g' /etc/nginx/conf.d/default.conf && \
