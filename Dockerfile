@@ -8,7 +8,6 @@ COPY package*.json ./
 
 RUN yarn install
 
-COPY --from=base /usr/app/node_modules ./node_modules 
 COPY . .
 
 ENV NEXT_TELEMETRY_DISABLED 1 
