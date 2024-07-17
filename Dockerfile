@@ -2,10 +2,8 @@ FROM node:18-alpine AS base
 
 FROM base as deps
 
-USER 0 
 
 WORKDIR /app 
-
 
 # Install dependencies based on the preferred package manager 
 
@@ -16,7 +14,7 @@ RUN yarn install
 
 # Rebuild the source code only when needed FROM node:18-Alpine AS builder
 FROM base AS builder
-USER 0 
+
 WORKDIR /app 
 RUN mkdir /app/.parcel-cache && chmod -R 777 /app/.parcel-cache && chmod -R 777 /app
 COPY --from=deps /app/node_modules ./node_modules 
@@ -26,8 +24,6 @@ ENV NEXT_TELEMETRY_DISABLED 1
 RUN yarn build 
 
 FROM base AS runner
-
-USER 0 
 
 WORKDIR /app 
 
