@@ -8,7 +8,6 @@ WORKDIR /app
 # Install dependencies based on the preferred package manager 
 
 COPY package*.json ./ 
-COPY . . 
 
 RUN yarn install
 
@@ -18,36 +17,54 @@ FROM base AS builder
 WORKDIR /app 
 RUN mkdir /app/.parcel-cache && chmod -R 777 /app/.parcel-cache && chmod -R 777 /app
 COPY --from=deps /app/node_modules ./node_modules 
-COPY . . 
+
 ENV NEXT_TELEMETRY_DISABLED 1 
 
 RUN yarn build 
 
-FROM base AS runner
-
-WORKDIR /app 
+RUN chown -R 1001:0 /app
 
 ENV NODE_ENV production 
 
 COPY --from=builder /app/public ./public 
+
 RUN mkdir .next
+
 RUN chown nextjs:nodejs .next
 
 # Automatically leverage output traces to reduce image size 
 # https://nextjs.org/docs/advanced-features/output-file-tracing 
 
 COPY --from=builder --chown=1001:1001 /app/.next/standalone ./ 
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-
+COPY --from=builder --chown=1001:1001 /app/.next/static ./.next/static
 
 USER 1001
 
+FROM nginx:alpine
 
-# nginx/Dockerfile
+WORKDIR /app
 
-FROM nginx:1.23.3-alpine
+RUN apk add nodejs-current npm supervisor
+RUN mkdir mkdir -p /var/log/supervisor && mkdir -p /etc/supervisor/conf.d
 
-COPY nginx.conf /etc/nginx/nginx.conf
+# Remove any existing config files
+RUN rm /etc/nginx/conf.d/*
+
+# Copy nginx config files
+# *.conf files in conf.d/ dir get included in main config
+COPY ./.nginx/default.conf /etc/nginx/conf.d/
+
+# COPY package.json next.config.js .env* ./
+# COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/node_modules ./node_modules
+
+# supervisor base configuration
+ADD supervisor.conf /etc/supervisor.conf
+
+# replace $PORT in nginx config (provided by executior) and start supervisord (run nextjs and nginx)
+CMD sed -i -e 's/$PORT/'"$PORT"'/g' /etc/nginx/conf.d/default.conf && \
+supervisord -c /etc/supervisor.conf
 
 EXPOSE 80
 EXPOSE 443
