@@ -10,8 +10,8 @@ COPY package*.json ./
 RUN yarn install
 
 RUN mkdir /usr/app/.parcel-cache && chmod -R 777 /usr/app/.parcel-cache && chmod -R 777 /app
-chmod - R 777 /usr/app
-COPY --from=deps /usr/app/node_modules ./node_modules 
+chmod - R 777 /usr/app/
+COPY --from=base /usr/app/node_modules ./node_modules 
 COPY . .
 
 ENV NEXT_TELEMETRY_DISABLED 1 
@@ -24,6 +24,7 @@ USER root
 FROM nginx:alpine
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=base --chown=1001:1001 /usr/app/src/app ./
+USER 1001
 EXPOSE 80
 EXPOSE 443
 CMD [“nginx”, “-g”, “daemon off;”]
