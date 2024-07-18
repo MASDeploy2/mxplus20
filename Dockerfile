@@ -1,5 +1,5 @@
 # Stage 1: Build the Next.js application
-FROM node:18-alpine AS builder
+FROM node:14-alpine AS builder
 
 RUN yarn set version latest
 RUN yarn cache clean
