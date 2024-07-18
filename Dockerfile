@@ -1,52 +1,36 @@
-FROM node:18-alpine AS base
+# Stage 1: Build the Next.js application
+FROM node:18-alpine AS builder
 
-WORKDIR /usr/app 
+# Set working directory
+WORKDIR /app
 
-# Install dependencies based on the preferred package manager 
+# Copy package.json and package-lock.json
+COPY package*.json ./
 
-COPY package*.json ./ 
+# Install dependencies
+RUN npm install
 
-RUN yarn install
-
+# Copy the rest of the application code
 COPY . .
 
-ENV NEXT_TELEMETRY_DISABLED 1 
+# Build the Next.js application
+RUN npm run build
 
-RUN mkdir .next
-RUN mkdir /usr/app/.parcel-cache && chmod -R 777 /usr/app/.parcel-cache
-
-RUN yarn build 
-
-
+# Stage 2: Serve the application with NGINX
 FROM nginx:alpine
 
-WORKDIR /usr/app
+# Remove default NGINX website
+RUN rm -rf /usr/share/nginx/html/*
 
-RUN apk add nodejs-current npm supervisor
-RUN mkdir -p /var/log/supervisor && mkdir -p /etc/supervisor/conf.d
+# Copy the built application from the builder stage
+COPY --from=builder /app/.next /usr/share/nginx/html/.next
+COPY --from=builder /app/public /usr/share/nginx/html
 
-# Remove any existing config files
-RUN rm /etc/nginx/conf.d/*
+# Copy custom NGINX configuration file
+COPY nginx.conf /etc/nginx/nginx.conf
 
-# Copy nginx config files
-# *.conf files in conf.d/ dir get included in main config
-COPY ./.nginx/default.conf /etc/nginx/conf.d/
+# Expose port 80 and 443
+EXPOSE 80 443
 
-# COPY package.json next.config.js .env* ./
-# COPY --from=base /usr/app/public ./public
-COPY --from=base /usr/app/.next ./.next
-COPY --from=base /usr/app/node_modules ./node_modules
-
-
-# supervisor base configuration
-ADD supervisor.conf /etc/supervisor.conf
-
-EXPOSE 3000
-EXPOSE 80
-EXPOSE 443
-EXPOSE 8080
-
-# replace $PORT in nginx config (provided by executior) and start supervisord (run nextjs and nginx)
-CMD sed -i -e 's/$PORT/'"$PORT"'/g' /etc/nginx/conf.d/default.conf && \
-  supervisord -c /etc/supervisor.conf
-
+# Start NGINX
+CMD ["nginx", "-g", "daemon off;"]
