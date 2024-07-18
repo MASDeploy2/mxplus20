@@ -25,7 +25,7 @@ COPY . .
 FROM nginx:alpine
 
 # Copy the built application from the builder stage
-COPY --from=builder /app/.next /usr/share/nginx/html/.next
+COPY --from=builder /app/.dist /usr/share/nginx/html/.dist
 COPY --from=builder /app/public /usr/share/nginx/html
 
 # Copy custom NGINX configuration file
