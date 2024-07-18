@@ -15,7 +15,7 @@ COPY package*.json ./
 # Install dependencies
 RUN yarn install --network-timeout 600000
 
-RUN mkdir /app/.parcel-cache && chmod -R 777 /usr/app/.parcel-cache
+RUN mkdir -p /app/.parcel-cache && chmod -R 777 /usr/app/.parcel-cache
 
 # Copy the rest of the application code
 COPY . .
