@@ -1,7 +1,6 @@
 # Stage 1: Build the Next.js application
 FROM node:18-alpine AS builder
 
-RUN yarn set version latest
 RUN yarn cache clean
 
 # Set working directory
@@ -20,7 +19,7 @@ RUN mkdir -p /app/.parcel-cache && chmod -R 777 /app/.parcel-cache
 COPY . .
 
 # Build the Next.js application
-RUN yarn run build && yarn install --ignore-scripts --prefer-offline
+RUN yarn run build 
 
 # Stage 2: Serve the application with NGINX
 FROM nginx:alpine
@@ -28,7 +27,8 @@ FROM nginx:alpine
 # Copy the built application from the builder stage
 # COPY --from=builder /app/src/app /usr/share/nginx/html/.dist
 # COPY --from=builder /app/public /usr/share/nginx/html
-COPY --from=builder /app/src/app ./
+COPY --from=builder /app/src/build /usr/share/nginx/html
+# COPY --from=builder /app/src/app ./
 
 
 # Copy custom NGINX configuration file
