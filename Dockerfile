@@ -11,7 +11,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install --network-timeout 600000
+RUN npm install
 
 # Copy the rest of the application code
 COPY . .
