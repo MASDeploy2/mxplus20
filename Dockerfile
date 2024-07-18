@@ -21,7 +21,7 @@ RUN yarn build
 
 
 # Install dependencies
-RUN yarn install -production
+RUN yarn install --production
 
 # Stage 2: Serve the application with NGINX
 FROM nginx:alpine
