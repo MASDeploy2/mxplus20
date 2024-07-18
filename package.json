@@ -3,9 +3,9 @@
 		"version": "0.1.0",
 		"private": true,
 		"scripts": {
-				"dev": "next dev -p 8080",
+				"dev": "next dev",
 				"build": "parcel src/app/index.html --no-cache",
-				"start": "parcel --host 0.0.0.0 src/app/index.html",
+				"start": "parcel src/app/index.html",
 				"lint": "next lint"
 		},
 		"dependencies": {
@@ -47,7 +47,7 @@
 				"react-dropzone": "^10.2.2",
 				"react-file-viewer": "^1.2.1",
 				"react-helmet": "^6.0.0",
-				"react-scripts": "5.0.0",
+                                "react-scripts": "5.0.0",
 				"react-hook-form": "^6.12.2",
 				"react-iframe": "^1.8.0",
 				"react-moment": "^0.9.7",
@@ -73,7 +73,7 @@
 				"postcss": "^8",
 				"process": "^0.11.10",
 				"tailwindcss": "^3.4.1",
-				"typescript": "^5"
+				"typescript": "5"
 		}
 
 }
