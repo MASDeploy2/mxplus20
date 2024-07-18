@@ -10,6 +10,8 @@ WORKDIR /app
 # Copy package.json and package-lock.json
 COPY package*.json ./
 
+RUN yarn upgrade
+
 # Install dependencies
 RUN yarn install --frozen-lockfile --network-timeout 600000
 
@@ -19,7 +21,7 @@ RUN mkdir -p /app/.parcel-cache && chmod -R 777 /app/.parcel-cache
 COPY . .
 
 # Build the Next.js application
-# RUN yarn build
+ RUN yarn build
 
 # Stage 2: Serve the application with NGINX
 FROM nginx:alpine
