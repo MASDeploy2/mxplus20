@@ -1,5 +1,5 @@
 # Stage 1: Build the Next.js application
-FROM node:18-alpine AS builder
+FROM node:19-alpine AS builder
 
 RUN yarn set version latest
 RUN yarn cache clean
@@ -11,11 +11,11 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-RUN yarn install --network-timeout 600000
+RUN npm install --network-timeout 600000
 
 # Copy the rest of the application code
 COPY . .
 
 # Build the Next.js application
-RUN yarn build
+RUN npm run build
 
