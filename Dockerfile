@@ -1,6 +1,9 @@
 # Stage 1: Build the Next.js application
 FROM node:18-alpine AS builder
 
+yarn set version latest
+yarn cache clean
+
 # Set working directory
 WORKDIR /app
 
