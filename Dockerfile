@@ -17,7 +17,7 @@ COPY . .
 RUN yarn build
 
 # Stage 2: Serve the application with NGINX
-FROM nginx:alpine
+FROM nginx:1.27.0-alpine
 
 # Remove default NGINX website
 RUN rm -rf /usr/share/nginx/html/*
