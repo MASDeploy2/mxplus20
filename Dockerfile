@@ -14,5 +14,4 @@ RUN yarn install --network-timeout 600000
 COPY . .
 
 # Build the Next.js application
-RUN yarn build
-
+RUN CI=false yarn run build
