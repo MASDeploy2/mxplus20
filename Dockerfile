@@ -1,5 +1,5 @@
 # Stage 1: Build the Next.js application
-FROM node:14-alpine AS builder
+FROM node:18-alpine AS builder
 
 RUN yarn set version latest
 RUN yarn cache clean
@@ -11,11 +11,30 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install
+RUN yarn install --network-timeout 600000
 
 # Copy the rest of the application code
 COPY . .
 
 # Build the Next.js application
-RUN npm run build
+RUN yarn build
 
+
+# Install dependencies
+RUN yarn install -production
+
+# Stage 2: Serve the application with NGINX
+FROM nginx:alpine
+
+# Copy the built application from the builder stage
+COPY --from=builder /app/.next /usr/share/nginx/html/.next
+COPY --from=builder /app/public /usr/share/nginx/html
+
+# Copy custom NGINX configuration file
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Expose port 80 and 443
+EXPOSE 80 443
+
+# Start NGINX
+CMD ["nginx", "-g", "daemon off;"]
