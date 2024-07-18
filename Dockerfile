@@ -20,7 +20,7 @@ RUN mkdir -p /app/.parcel-cache && chmod -R 777 /app/.parcel-cache
 COPY . .
 
 # Build the Next.js application
-RUN yarn run build && yarn install --production --ignore-scripts --prefer-offline
+RUN yarn run build && yarn install --ignore-scripts --prefer-offline
 
 # Stage 2: Serve the application with NGINX
 FROM nginx:alpine
