@@ -2,7 +2,7 @@
 FROM node:18-alpine AS builder
 
 # Set working directory
-WORKDIR /usr/app
+WORKDIR /app
 
 # Copy package.json and package-lock.json
 COPY package*.json ./
@@ -14,4 +14,5 @@ RUN yarn install --network-timeout 600000
 COPY . .
 
 # Build the Next.js application
-RUN CI=false yarn run build
+RUN yarn build
+
