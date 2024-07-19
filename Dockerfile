@@ -11,7 +11,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-RUN yarn install --network-timeout 600000
+RUN yarn install
 
 RUN mkdir -p /app/.parcel-cache && chmod -R 777 /app/.parcel-cache
 
@@ -20,10 +20,6 @@ COPY . .
 
 # Build the Next.js application
 RUN yarn build
-
-
-# Install dependencies
-RUN yarn install
 
 # Stage 2: Serve the application with NGINX
 FROM nginx:alpine
