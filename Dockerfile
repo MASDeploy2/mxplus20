@@ -26,6 +26,7 @@ FROM nginx:alpine
 
 # Copy the built application from the builder stage
 COPY --from=builder /app/src/app/dist /usr/share/nginx/html/dist
+COPY --from=builder /app /usr/share/nginx/html
 # COPY --from=builder /app/public /usr/share/nginx/html
 
 # Copy custom NGINX configuration file
